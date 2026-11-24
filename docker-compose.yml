@@ -1,0 +1,12 @@
+services:
+  revnation-studio:
+    build: .
+    container_name: revnation-studio
+    restart: unless-stopped
+    ports:
+      - "8505:8505"
+    environment:
+      - TZ=America/Mexico_City
+      - CACHE_DIR=/app/cache
+    volumes:
+      - ./cache:/app/cache

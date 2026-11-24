@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rev Nation MX · Estudio Editorial F1</title>
+  <style>
+    @font-face {
+      font-family: "Bebas Neue";
+      src: url("/static/fonts/BebasNeue-Regular.ttf") format("truetype");
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "IBM Plex Sans";
+      src: url("/static/fonts/IBMPlexSans-Regular.ttf") format("truetype");
+      font-weight: 100 900;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "IBM Plex Mono";
+      src: url("/static/fonts/IBMPlexMono-Regular.ttf") format("truetype");
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "IBM Plex Mono";
+      src: url("/static/fonts/IBMPlexMono-Bold.ttf") format("truetype");
+      font-weight: 700;
+      font-display: swap;
+    }
+
+    :root {
+      --bg: #0b1410;
+      --panel: #111d17;
+      --panel-2: #16261e;
+      --border: #253b30;
+      --text: #efe9dc;
+      --muted: #8fa397;
+      --accent: #e63935;
+      --mint: #1ad6b8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.4;
+    }
+    .wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    @media (max-width: 960px) {
+      .wrap { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+    .hdr h1 {
+      margin: 0;
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 28px;
+      letter-spacing: 0.04em;
+      font-weight: 400;
+    }
+    .badge {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: var(--mint);
+    }
+    .sec-title {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .row4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    select, input[type="text"], input[type="number"] {
+      width: 100%;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 13px;
+      font-family: inherit;
+    }
+    select:focus, input:focus {
+      outline: none;
+      border-color: var(--mint);
+    }
+    .mono { font-family: "IBM Plex Mono", monospace; }
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .btn {
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: "IBM Plex Mono", monospace;
+      transition: all 0.12s;
+    }
+    .btn:hover { border-color: var(--mint); }
+    .btn.active {
+      background: var(--mint);
+      color: #071610;
+      border-color: var(--mint);
+    }
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      padding: 12px 14px;
+      font-size: 13px;
+      width: 100%;
+    }
+    .btn-primary:hover { opacity: 0.92; border-color: var(--accent); }
+    .divider { height: 1px; background: var(--border); }
+    .status {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+    }
+    .status.err { color: #ff8b88; border-color: #6b2422; }
+    .preview-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 18px;
+    }
+    .preview-frame {
+      width: 100%;
+      max-width: 560px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+    }
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0;
+    }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .drv-pill {
+      cursor: pointer;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--muted);
+    }
+    .drv-pill.on {
+      color: var(--text);
+      border-color: var(--mint);
+      background: var(--panel-2);
+    }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- CONTROLS -->
+    <aside class="panel">
+      <div class="hdr">
+        <h1>REV NATION MX · STUDIO</h1>
+        <span class="badge">OPENF1 LIVE</span>
+      </div>
+
+      <!-- 1. Year & GP -->
+      <div>
+        <span class="sec-title">1. Temporada y Gran Premio</span>
+        <div class="row2" style="grid-template-columns: 105px 1fr;">
+          <select id="yearSel">
+            <option value="2026" selected>2026</option>
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+          </select>
+          <select id="gpSel"></select>
+        </div>
+      </div>
+
+      <!-- 2. Mode -->
+      <div>
+        <span class="sec-title">2. Tipo de Lámina Editorial</span>
+        <div class="mode-grid">
+          <button class="btn active" data-mode="battle">Batalla (Pos + Ritmo)</button>
+          <button class="btn" data-mode="pace">Ritmo Limpio (Stints)</button>
+          <button class="btn" data-mode="stints">Estrategia Top 10</button>
+          <button class="btn" data-mode="qualy">Qualy (Mapa + Vel)</button>
+        </div>
+      </div>
+
+      <div id="statusBar" class="status">Cargando calendario desde OpenF1...</div>
+
+      <!-- Dynamic Driver Controls -->
+      <div id="ctrlBattle">
+        <span class="sec-title">3. Pilotos y Rango de Vueltas</span>
+        <div class="row3" style="margin-bottom:8px;">
+          <div>
+            <span class="sec-title" style="font-size:10px;">Piloto A</span>
+            <select id="bDrvA"></select>
+          </div>
+          <div>
+            <span class="sec-title" style="font-size:10px;">Piloto B</span>
+            <select id="bDrvB"></select>
+          </div>
+          <div>
+            <span class="sec-title" style="font-size:10px;">Contexto</span>
+            <select id="bDrvC"></select>
+          </div>
+        </div>
+        <div class="row3">
+          <div>
+            <span class="sec-title" style="font-size:10px;">Vuelta ini</span>
+            <input id="lapStart" type="number" min="1" max="80" value="1" />
+          </div>
+          <div>
+            <span class="sec-title" style="font-size:10px;">Vuelta fin</span>
+            <input id="lapEnd" type="number" min="1" max="80" value="50" />
+          </div>
+          <div style="display:flex;align-items:flex-end;">
+            <button id="btnPostSC" class="btn" style="width:100%;">Post-SC</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="ctrlPace" class="hidden">
+        <span class="sec-title">3. Pilotos en Ritmo (máx. 4)</span>
+        <div id="pacePills" class="pill-row"></div>
+      </div>
+
+      <div id="ctrlQualy" class="hidden">
+        <span class="sec-title">3. Duelo de Qualy (Vuelta Rápida)</span>
+        <div class="row2">
+          <select id="qDrvA"></select>
+          <select id="qDrvB"></select>
+        </div>
+        <button id="btnLoadQualy" class="btn" style="margin-top:8px;width:100%;">Descargar Telemetría Qualy</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- 4. Format & Palette -->
+      <div class="row2">
+        <div>
+          <span class="sec-title">4. Formato</span>
+          <select id="formatSel">
+            <option value="4:5" selected>4:5 · Feed IG (1080×1350)</option>
+            <option value="9:16">9:16 · Reel (1080×1920)</option>
+          </select>
+        </div>
+        <div>
+          <span class="sec-title">5. Papel / Fondo</span>
+          <select id="paletteSel">
+            <option value="brg" selected>British Racing Green</option>
+            <option value="deep">Racing Moss</option>
+            <option value="paper">Papel Crema Editorial</option>
+            <option value="ink">Carbón Mate</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 5. Editable Copy -->
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span class="sec-title">6. Textos (editables en vivo)</span>
+          <button id="btnAutoCopy" class="btn" style="padding:3px 8px;font-size:10px;">Auto-rellenar</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px;">
+          <input id="inLine1" type="text" class="mono" placeholder="Titular línea 1" />
+          <input id="inLine2" type="text" class="mono" placeholder="Titular línea 2" />
+          <input id="inDeck" type="text" placeholder="Bajada editorial (1 línea)" />
+        </div>
+      </div>
+
+      <!-- Grain & Brand -->
+      <div class="row2">
+        <div>
+          <span class="sec-title">Grano analógico (<span id="grainVal">5</span>)</span>
+          <input id="grainRange" type="range" min="0" max="12" value="5" style="width:100%;" />
+        </div>
+        <div>
+          <span class="sec-title">Firma</span>
+          <input id="inHandle" type="text" class="mono" value="@revnationmx" />
+        </div>
+      </div>
+
+      <button id="downloadBtn" class="btn btn-primary">⬇ Descargar PNG (1080px)</button>
+    </aside>
+
+    <!-- PREVIEW -->
+    <main class="preview-col">
+      <div class="preview-frame">
+        <canvas id="posterCanvas" width="1080" height="1350"></canvas>
+      </div>
+      <p class="hint">Corre en tu Proxmox · caché persistente en <code>/opt/revnation-studio/cache</code> (sin afectar tu media-stack).</p>
+    </main>
+  </div>
+
+  <script>
+    const PALETTES = {
+      brg:   { bg: "#0D2017", ink: "#F3EDE0", soft: "#94A89B", line: "#274133", red: "#E63935", muted: "#5F786B" },
+      deep:  { bg: "#08150F", ink: "#F5EFE2", soft: "#8AA093", line: "#1E3629", red: "#E63935", muted: "#51695C" },
+      paper: { bg: "#F3EDE0", ink: "#12241B", soft: "#53685C", line: "#CFC6B3", red: "#C92420", muted: "#88978E" },
+      ink:   { bg: "#121417", ink: "#F2EFE9", soft: "#939AA3", line: "#2A2F36", red: "#E63935", muted: "#626A75" }
+    };
+
+    const COMP_COLORS = {
+      SOFT: "#E63935",
+      MEDIUM: "#EAB308",
+      HARD: "#DCE3EA",
+      INTERMEDIATE: "#22C55E",
+      WET: "#3B82F6",
+      UNKNOWN: "#64748B"
+    };
+
+    const state = {
+      year: 2026,
+      meetings: [],
+      meeting: null,
+      mode: "battle",
+      format: "4:5",
+      palette: "brg",
+      grain: 5,
+      handle: "@revnationmx",
+      site: "liciolorenzoni.tech/f1",
+      race: null,
+      qualyDrivers: [],
+      qualyCompare: null,
+      drvA: "",
+      drvB: "",
+      drvC: "",
+      paceSet: [],
+      lapStart: 1,
+      lapEnd: 50,
+      line1: "CARGANDO TELEMETRÍA",
+      line2: "GP DE FÓRMULA 1",
+      deck: "Selecciona un Gran Premio para generar tu lámina editorial.",
+      stats: [
+        { num: "—", title: "DATO 1", sub: "" },
+        { num: "—", title: "DATO 2", sub: "" },
+        { num: "—", title: "DATO 3", sub: "" }
+      ]
+    };
+
+    const canvas = document.getElementById("posterCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function setStatus(msg, isErr = false) {
+      const el = document.getElementById("statusBar");
+      el.textContent = msg;
+      el.className = "status" + (isErr ? " err" : "");
+    }
+
+    function fmtLap(sec) {
+      if (sec == null || Number.isNaN(sec)) return "—";
+      const m = Math.floor(sec / 60);
+      const r = (sec - m * 60).toFixed(3).padStart(6, "0");
+      return m > 0 ? `${m}:${r}` : `${r}s`;
+    }
+
+    function fmtLapShort(sec) {
+      const m = Math.floor(sec / 60);
+      const r = (sec - m * 60).toFixed(2).padStart(5, "0");
+      return `${m}:${r}`;
+    }
+
+    function drvMeta(code) {
+      if (!state.race) return { code, name: code, color: "#1AD6B8", pos: 99 };
+      return state.race.drivers.find(d => d.code === code) || { code, name: code, color: "#1AD6B8", pos: 99 };
+    }
+
+    function safeColor(hex, isPaper) {
+      if (!hex) return isPaper ? "#1D4ED8" : "#1AD6B8";
+      // Evitar colores demasiado oscuros sobre verde oscuro o demasiado claros sobre papel
+      const c = hex.replace("#", "");
+      if (c.length !== 6) return hex;
+      const r = parseInt(c.slice(0, 2), 16), g = parseInt(c.slice(2, 4), 16), b = parseInt(c.slice(4, 6), 16);
+      const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+      if (!isPaper && lum < 75) return "#7AA7FF";
+      if (isPaper && lum > 200) return "#0D8A76";
+      return "#" + c;
+    }
+
+    function distinctPairColors(colA, colB, isPaper) {
+      let a = safeColor(colA, isPaper);
+      let b = safeColor(colB, isPaper);
+      if (a.toLowerCase() === b.toLowerCase()) {
+        b = isPaper ? "#C2590A" : "#F4C244";
+      }
+      return [a, b];
+    }
+
+    // --- API LOADERS ---
+    async function loadMeetings(year) {
+      setStatus(`Buscando GPs de ${year} en OpenF1...`);
+      try {
+        const res = await fetch(`/api/meetings?year=${year}`);
+        const data = await res.json();
+        state.meetings = data.meetings || [];
+        const sel = document.getElementById("gpSel");
+        sel.innerHTML = state.meetings.map((m, i) =>
+          `<option value="${i}">${m.circuit} (${m.country}) · ${m.date}</option>`
+        ).join("");
+        if (state.meetings.length > 0) {
+          // Preferir el GP mas reciente que ya haya ocurrido hoy
+          const today = new Date().toISOString().slice(0, 10);
+          let idx = state.meetings.findIndex(m => m.date <= today);
+          if (idx < 0) idx = 0;
+          sel.value = String(idx);
+          await selectMeeting(idx);
+        } else {
+          setStatus(`No se encontraron sesiones para ${year}.`, true);
+        }
+      } catch (e) {
+        setStatus("Error conectando con /api/meetings: " + e.message, true);
+      }
+    }
+
+    async function selectMeeting(idx) {
+      state.meeting = state.meetings[idx];
+      state.race = null;
+      state.qualyDrivers = [];
+      state.qualyCompare = null;
+
+      if (state.mode === "qualy") {
+        await loadQualyDrivers();
+      } else {
+        await loadRace();
+      }
+    }
+
+    async function loadRace() {
+      if (!state.meeting || !state.meeting.race_key) {
+        setStatus("Este GP todavía no tiene sesión de Carrera disponible.", true);
+        return;
+      }
+      setStatus(`Descargando carrera de ${state.meeting.circuit} (1ra vez ~3s, luego caché)...`);
+      try {
+        const res = await fetch(`/api/race/${state.meeting.race_key}`);
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          setStatus(err.detail || "Carrera todavía no disponible en OpenF1.", true);
+          return;
+        }
+        state.race = await res.json();
+        populateRaceSelectors();
+        autoPopulateCopy();
+        setStatus(`Listo: ${state.meeting.circuit} ${state.year} · ${state.race.total_laps} vueltas (${state.race.safety_cars.length} SC).`);
+        render();
+      } catch (e) {
+        setStatus("Error cargando carrera: " + e.message, true);
+      }
+    }
+
+    async function loadQualyDrivers() {
+      if (!state.meeting || !state.meeting.qualy_key) {
+        setStatus("Este GP no tiene sesión de Qualifying disponible.", true);
+        return;
+      }
+      setStatus(`Cargando clasificación de ${state.meeting.circuit}...`);
+      try {
+        const res = await fetch(`/api/qualy_drivers/${state.meeting.qualy_key}`);
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          setStatus(err.detail || "Qualy no disponible todavía.", true);
+          return;
+        }
+        const data = await res.json();
+        state.qualyDrivers = data.drivers || [];
+        const opts = state.qualyDrivers.map(d =>
+          `<option value="${d.number}">P${d.pos} · ${d.code} (${fmtLap(d.best_lap)})</option>`
+        ).join("");
+        document.getElementById("qDrvA").innerHTML = opts;
+        document.getElementById("qDrvB").innerHTML = opts;
+        if (state.qualyDrivers.length >= 2) {
+          document.getElementById("qDrvA").value = String(state.qualyDrivers[0].number);
+          document.getElementById("qDrvB").value = String(state.qualyDrivers[1].number);
+          await loadQualyCompare();
+        }
+      } catch (e) {
+        setStatus("Error cargando Qualy: " + e.message, true);
+      }
+    }
+
+    async function loadQualyCompare() {
+      if (!state.meeting || !state.meeting.qualy_key) return;
+      const a = document.getElementById("qDrvA").value;
+      const b = document.getElementById("qDrvB").value;
+      setStatus("Descargando telemetría de vuelta rápida + mapa X/Y...");
+      try {
+        const res = await fetch(`/api/qualy_compare/${state.meeting.qualy_key}?driver_a=${a}&driver_b=${b}`);
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          setStatus(err.detail || "No se pudo descargar telemetría.", true);
+          return;
+        }
+        state.qualyCompare = await res.json();
+        autoPopulateCopy();
+        setStatus(`Telemetría Qualy lista: ${state.qualyCompare.a.driver.code} vs ${state.qualyCompare.b.driver.code}.`);
+        render();
+      } catch (e) {
+        setStatus("Error descargando telemetría: " + e.message, true);
+      }
+    }
+
+    function populateRaceSelectors() {
+      const drvs = state.race.drivers;
+      const opts = drvs.map(d => `<option value="${d.code}">P${d.order} · ${d.code} — ${d.name}</option>`).join("");
+      document.getElementById("bDrvA").innerHTML = opts;
+      document.getElementById("bDrvB").innerHTML = opts;
+      document.getElementById("bDrvC").innerHTML = `<option value="">— Ninguno —</option>` + opts;
+
+      state.drvA = drvs[0]?.code || "";
+      // Si es Las Vegas 2026, default VER vs RUS con ANT; si no, P1 vs P2 con P3
+      const hasRus = drvs.some(d => d.code === "RUS");
+      state.drvB = (state.meeting.circuit === "Las Vegas" && state.year === 2026 && hasRus) ? "RUS" : (drvs[1]?.code || state.drvA);
+      state.drvC = (state.meeting.circuit === "Las Vegas" && state.year === 2026) ? "ANT" : (drvs[2]?.code || "");
+
+      document.getElementById("bDrvA").value = state.drvA;
+      document.getElementById("bDrvB").value = state.drvB;
+      document.getElementById("bDrvC").value = state.drvC;
+
+      const scs = state.race.safety_cars || [];
+      state.lapStart = scs.length > 0 ? Math.min(state.race.total_laps - 5, scs[scs.length - 1][1] + 1) : 1;
+      if (state.lapStart < 1) state.lapStart = 1;
+      state.lapEnd = state.race.total_laps;
+      document.getElementById("lapStart").value = state.lapStart;
+      document.getElementById("lapEnd").value = state.lapEnd;
+
+      // Pills para ritmo limpio (Top 4 por default)
+      state.paceSet = drvs.slice(0, 4).map(d => d.code);
+      renderPacePills();
+    }
+
+    function renderPacePills() {
+      if (!state.race) return;
+      const cont = document.getElementById("pacePills");
+      cont.innerHTML = state.race.drivers.slice(0, 12).map(d => {
+        const on = state.paceSet.includes(d.code);
+        return `<button class="drv-pill ${on ? "on" : ""}" data-code="${d.code}">P${d.order} ${d.code}</button>`;
+      }).join("");
+      cont.querySelectorAll(".drv-pill").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const c = btn.dataset.code;
+          if (state.paceSet.includes(c)) {
+            if (state.paceSet.length > 1) state.paceSet = state.paceSet.filter(x => x !== c);
+          } else {
+            if (state.paceSet.length >= 4) state.paceSet.shift();
+            state.paceSet.push(c);
+          }
+          renderPacePills();
+          autoPopulateCopy();
+          render();
+        });
+      });
+    }
+
+    function autoPopulateCopy() {
+      const gpName = state.meeting ? `${state.meeting.circuit} ${state.year}` : "F1";
+      if (state.mode === "battle" && state.race) {
+        const a = drvMeta(state.drvA), b = drvMeta(state.drvB);
+        const sA = (state.race.series[a.code] || []).filter(r => r[0] >= state.lapStart && r[0] <= state.lapEnd);
+        const sB = (state.race.series[b.code] || []).filter(r => r[0] >= state.lapStart && r[0] <= state.lapEnd);
+        let swaps = 0, prevLead = null;
+        const mapB = Object.fromEntries(sB.map(r => [r[0], r]));
+        let fastA = 999, fastB = 999;
+        sA.forEach(ra => {
+          const rb = mapB[ra[0]];
+          if (ra[2] < fastA && ra[2] > 60) fastA = ra[2];
+          if (rb) {
+            if (rb[2] < fastB && rb[2] > 60) fastB = rb[2];
+            const lead = (ra[1] || 99) < (rb[1] || 99) ? a.code : b.code;
+            if (prevLead && lead !== prevLead) swaps++;
+            prevLead = lead;
+          }
+        });
+        state.line1 = `${a.code} vs ${b.code} EN ${state.meeting.circuit.toUpperCase()}.`;
+        state.line2 = swaps > 1 ? `${swaps} CAMBIOS DE POSICIÓN EN PISTA.` : `ASÍ SE DEFINIÓ LA BATALLA.`;
+        state.deck = `Posición y ritmo vuelta a vuelta entre ${a.name} y ${b.name} (V${state.lapStart}–V${state.lapEnd}).`;
+        state.stats = [
+          { num: `${swaps}`, title: "CAMBIOS ENTRE AMBOS", sub: `entre V${state.lapStart} y V${state.lapEnd}` },
+          { num: fastA < 900 ? fmtLapShort(fastA) : "—", title: `MEJOR VUELTA ${a.code}`, sub: `Meta: P${a.order}` },
+          { num: fastB < 900 ? fmtLapShort(fastB) : "—", title: `MEJOR VUELTA ${b.code}`, sub: `Meta: P${b.order}` }
+        ];
+      } else if (state.mode === "pace" && state.race) {
+        const list = state.paceSet.join(" · ");
+        state.line1 = `RITMO DE CARRERA.`;
+        state.line2 = `QUIÉN CUIDÓ MEJOR LAS GOMAS.`;
+        state.deck = `Tiempos limpios vuelta a vuelta en ${gpName} (${list}) sin paradas ni Safety Car.`;
+        const d0 = drvMeta(state.paceSet[0]);
+        const d1 = drvMeta(state.paceSet[1] || state.paceSet[0]);
+        const st0 = (state.race.stints[d0.code] || []).slice(-1)[0];
+        const st1 = (state.race.stints[d1.code] || []).slice(-1)[0];
+        state.stats = [
+          { num: `${state.race.total_laps}`, title: "VUELTAS TOTALES", sub: `${state.race.safety_cars.length} Safety Car en carrera` },
+          { num: st0 ? `${st0.compound.slice(0,3)} ${st0.end - st0.start + 1}v` : "—", title: `STINT FINAL ${d0.code}`, sub: `Resultado: P${d0.order}` },
+          { num: st1 ? `${st1.compound.slice(0,3)} ${st1.end - st1.start + 1}v` : "—", title: `STINT FINAL ${d1.code}`, sub: `Resultado: P${d1.order}` }
+        ];
+      } else if (state.mode === "stints" && state.race) {
+        const win = state.race.drivers[0];
+        const winSt = state.race.stints[win.code] || [];
+        const seq = winSt.map(s => s.compound[0]).join(" → ");
+        state.line1 = `ESTRATEGIA DE NEUMÁTICOS.`;
+        state.line2 = `${win.name.toUpperCase()} GANA EN ${state.meeting.circuit.toUpperCase()}.`;
+        state.deck = `Paradas y duración exacta de cada compuesto en el Top 10 (${state.race.total_laps} vueltas).`;
+        state.stats = [
+          { num: seq || "—", title: `ESTRATEGIA GANADORA`, sub: `${win.code} · ${Math.max(0, winSt.length - 1)} parada(s)` },
+          { num: `${state.race.safety_cars.length}`, title: "SAFETY CARS", sub: state.race.safety_cars.map(s => `V${s[0]}–${s[1]}`).join(", ") || "Carrera limpia" },
+          { num: `${state.race.total_laps}v`, title: "DISTANCIA DE CARRERA", sub: state.meeting.country }
+        ];
+      } else if (state.mode === "qualy" && state.qualyCompare) {
+        const qa = state.qualyCompare.a, qb = state.qualyCompare.b;
+        const gap = qb.lap_duration - qa.lap_duration;
+        state.line1 = `${qa.driver.code} vs ${qb.driver.code} EN QUALY.`;
+        state.line2 = `SEPARADOS POR ${Math.abs(gap).toFixed(3)} SEGUNDOS.`;
+        state.deck = `Mapa de dominancia real y velocidad en vuelta rápida (${gpName}).`;
+        state.stats = [
+          { num: `${gap >= 0 ? "+" : ""}${gap.toFixed(3)}s`, title: `GAP ${qb.driver.code} vs ${qa.driver.code}`, sub: `${fmtLap(qa.lap_duration)} vs ${fmtLap(qb.lap_duration)}` },
+          { num: `${qa.max_speed} / ${qb.max_speed}`, title: "VELOCIDAD PUNTA (KM/H)", sub: `${qa.driver.code} vs ${qb.driver.code}` },
+          { num: `${qa.full_throttle_pct}% / ${qb.full_throttle_pct}%`, title: "GAS A FONDO (≥95%)", sub: "porcentaje de la vuelta" }
+        ];
+      }
+      document.getElementById("inLine1").value = state.line1;
+      document.getElementById("inLine2").value = state.line2;
+      document.getElementById("inDeck").value = state.deck;
+    }
+
+    // --- CANVAS RENDERER (SWISS EDITORIAL) ---
+    function setFont(weight, size, family) {
+      if (family === "display") ctx.font = `400 ${size}px "Bebas Neue", "Arial Narrow", Impact, sans-serif`;
+      else if (family === "mono") ctx.font = `${weight} ${size}px "IBM Plex Mono", ui-monospace, monospace`;
+      else ctx.font = `${weight} ${size}px "IBM Plex Sans", system-ui, sans-serif`;
+    }
+
+    function applyGrain(strength) {
+      if (strength <= 0) return;
+      const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const d = img.data;
+      let seed = 20261124;
+      const s = strength * 2.3;
+      for (let i = 0; i < d.length; i += 4) {
+        seed = (seed * 1664525 + 1013904223) >>> 0;
+        const n = ((seed / 4294967295) - 0.5) * s;
+        d[i] = Math.max(0, Math.min(255, d[i] + n));
+        d[i + 1] = Math.max(0, Math.min(255, d[i + 1] + n));
+        d[i + 2] = Math.max(0, Math.min(255, d[i + 2] + n));
+      }
+      ctx.putImageData(img, 0, 0);
+    }
+
+    function render() {
+      const W = 1080;
+      const H = state.format === "9:16" ? 1920 : 1350;
+      canvas.width = W;
+      canvas.height = H;
+
+      const P = PALETTES[state.palette];
+      const isPaper = state.palette === "paper";
+      const L = 72, R = W - 72;
+      const isTall = state.format === "9:16";
+      const topOff = isTall ? 155 : 0;
+      const botSafe = isTall ? 210 : 0;
+
+      ctx.fillStyle = P.bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // 1. Masthead
+      const yK = 64 + topOff;
+      const gpTitle = state.meeting ? `${state.meeting.circuit.toUpperCase()} ${state.year}` : "FÓRMULA 1";
+      const modeLbl = { battle: "BATALLA EN CARRERA", pace: "RITMO Y DEGRADACIÓN", stints: "ESTRATEGIA", qualy: "TELEMETRÍA QUALY" }[state.mode];
+
+      setFont("700", 16.5, "mono");
+      ctx.fillStyle = P.soft; ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+      ctx.fillText(`GP DE ${gpTitle}  ·  ${modeLbl}`, L, yK);
+      ctx.fillStyle = P.ink; ctx.textAlign = "right";
+      ctx.fillText("REV NATION MX", R, yK);
+
+      ctx.fillStyle = P.line; ctx.fillRect(L, yK + 15, R - L, 1.5);
+      ctx.fillStyle = P.red; ctx.fillRect(L, yK + 13.5, 46, 4);
+
+      ctx.fillStyle = P.ink; ctx.textAlign = "left"; ctx.textBaseline = "top";
+      setFont("400", 72, "display");
+      ctx.fillText(state.line1.toUpperCase(), L, yK + 32, R - L);
+      ctx.fillText(state.line2.toUpperCase(), L, yK + 106, R - L);
+
+      setFont("400", 19.5, "sans");
+      ctx.fillStyle = P.soft;
+      ctx.fillText(state.deck, L, yK + 190, R - L);
+
+      const yRule = yK + 232;
+      ctx.fillStyle = P.line; ctx.fillRect(L, yRule, R - L, 1.2);
+
+      const chartTop = yRule + 26;
+      const statsTop = H - botSafe - 252;
+      const chartBot = statsTop - 30;
+
+      if (state.mode === "battle" && state.race) drawBattle(P, isPaper, L, R, chartTop, chartBot);
+      else if (state.mode === "pace" && state.race) drawPace(P, isPaper, L, R, chartTop, chartBot);
+      else if (state.mode === "stints" && state.race) drawStints(P, isPaper, L, R, chartTop, chartBot);
+      else if (state.mode === "qualy" && state.qualyCompare) drawQualy(P, isPaper, L, R, chartTop, chartBot);
+
+      // 3. Swiss 3-Column Stats
+      ctx.fillStyle = P.line; ctx.fillRect(L, statsTop, R - L, 1.5);
+      const cw = (R - L) / 3;
+      state.stats.forEach((st, i) => {
+        const x0 = L + i * cw;
+        if (i > 0) {
+          ctx.fillStyle = P.line;
+          ctx.fillRect(x0 - 18, statsTop + 22, 1.2, 126);
+        }
+        ctx.textAlign = "left"; ctx.textBaseline = "top";
+        setFont("400", 58, "display");
+        ctx.fillStyle = i === 0 ? P.red : P.ink;
+        ctx.fillText(st.num, x0, statsTop + 20, cw - 24);
+        setFont("700", 14.5, "mono");
+        ctx.fillStyle = P.ink;
+        ctx.fillText(st.title, x0, statsTop + 92, cw - 24);
+        setFont("400", 15.5, "sans");
+        ctx.fillStyle = P.soft;
+        ctx.fillText(st.sub, x0, statsTop + 116, cw - 24);
+      });
+
+      // 4. Colophon
+      const yFR = statsTop + 172;
+      ctx.fillStyle = P.line; ctx.fillRect(L, yFR, R - L, 1.2);
+      const yF = yFR + 34;
+      ctx.textBaseline = "middle";
+      setFont("700", 17, "mono"); ctx.fillStyle = P.ink; ctx.textAlign = "left";
+      ctx.fillText(state.handle, L, yF);
+      setFont("400", 16, "mono"); ctx.fillStyle = P.soft; ctx.textAlign = "center";
+      ctx.fillText(state.site, W / 2, yF);
+      setFont("400", 14.5, "mono"); ctx.textAlign = "right";
+      ctx.fillText("DATOS: OPENF1", R, yF);
+
+      applyGrain(state.grain);
+    }
+
+    function drawBattle(P, isPaper, L, R, top, bottom) {
+      const avail = bottom - top;
+      const topH = avail * 0.56;
+      const xL = L + 48, xR = R - 102;
+      const l0 = Math.max(1, state.lapStart);
+      const l1 = Math.max(l0 + 1, Math.min(state.race.total_laps, state.lapEnd));
+      const xOf = l => xL + ((l - l0) / (l1 - l0)) * (xR - xL);
+
+      const dA = drvMeta(state.drvA), dB = drvMeta(state.drvB), dC = state.drvC ? drvMeta(state.drvC) : null;
+      const [colA, colB] = distinctPairColors(dA.color, dB.color, isPaper);
+      const ptsA = (state.race.series[dA.code] || []).filter(r => r[0] >= l0 && r[0] <= l1 && r[1] != null);
+      const ptsB = (state.race.series[dB.code] || []).filter(r => r[0] >= l0 && r[0] <= l1 && r[1] != null);
+      const ptsC = dC ? (state.race.series[dC.code] || []).filter(r => r[0] >= l0 && r[0] <= l1 && r[1] != null) : [];
+
+      const allPos = [...ptsA, ...ptsB, ...ptsC].map(r => r[1]);
+      const minP = Math.max(1, Math.min(...allPos, 1));
+      const maxP = Math.max(6, Math.max(...allPos, 6)) + 0.6;
+
+      ctx.textAlign = "left"; ctx.textBaseline = "top";
+      setFont("700", 15, "mono"); ctx.fillStyle = P.soft;
+      ctx.fillText(`POSICIÓN EN PISTA  ·  VUELTAS ${l0} A ${l1}`, L, top);
+
+      const pTop = top + 34, pBot = top + topH;
+      const yPos = p => pTop + ((p - minP) / Math.max(1, maxP - minP)) * (pBot - pTop);
+
+      // Safety Car bands
+      (state.race.safety_cars || []).forEach(([s0, s1]) => {
+        if (s1 < l0 || s0 > l1) return;
+        const a = Math.max(l0, s0), b = Math.min(l1, s1);
+        ctx.fillStyle = P.ink; ctx.globalAlpha = 0.06;
+        ctx.fillRect(xOf(a), pTop, Math.max(6, xOf(b) - xOf(a)), pBot - pTop);
+        ctx.globalAlpha = 1;
+      });
+
+      // Y ticks
+      const ticks = [minP, Math.round((minP + maxP) / 3), Math.round((minP + 2 * maxP) / 3), Math.floor(maxP)];
+      [...new Set(ticks)].forEach(p => {
+        const y = yPos(p);
+        ctx.strokeStyle = P.line; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(xL, y); ctx.lineTo(xR, y); ctx.stroke();
+        setFont("400", 14.5, "mono"); ctx.fillStyle = P.soft; ctx.textAlign = "right"; ctx.textBaseline = "middle";
+        ctx.fillText(`P${p}`, xL - 12, y);
+      });
+
+      const strokePos = (pts, col, lw, dashed) => {
+        if (!pts.length) return;
+        ctx.save();
+        ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.lineJoin = "round"; ctx.lineCap = "round";
+        if (dashed) ctx.setLineDash([7, 6]);
+        ctx.beginPath();
+        pts.forEach((r, i) => { const x = xOf(r[0]), y = yPos(r[1]); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
+        ctx.stroke();
+        ctx.restore();
+      };
+
+      if (ptsC.length) strokePos(ptsC, P.muted, 2.2, true);
+      strokePos(ptsB, colB, 4.8, false);
+      strokePos(ptsA, colA, 4.8, false);
+
+      // Direct labels at end of lines (avoid vertical collisions)
+      const ends = [];
+      if (ptsA.length) ends.push({ y: yPos(ptsA[ptsA.length - 1][1]), txt: `${dA.code} P${ptsA[ptsA.length - 1][1]}`, col: colA, bold: true });
+      if (ptsB.length) ends.push({ y: yPos(ptsB[ptsB.length - 1][1]), txt: `${dB.code} P${ptsB[ptsB.length - 1][1]}`, col: colB, bold: true });
+      if (ptsC.length) ends.push({ y: yPos(ptsC[ptsC.length - 1][1]), txt: `${dC.code} P${ptsC[ptsC.length - 1][1]}`, col: P.muted, bold: false });
+      ends.sort((u, v) => u.y - v.y);
+      for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 22) ends[i].y = ends[i - 1].y + 22;
+      ends.forEach(e => {
+        ctx.textAlign = "left"; ctx.textBaseline = "middle";
+        setFont(e.bold ? "700" : "400", 16.5, "mono");
+        ctx.fillStyle = e.col; ctx.fillText(e.txt, xR + 12, e.y);
+      });
+
+      // --- Pace diff strip below ---
+      const bHdrY = pBot + 30;
+      ctx.textAlign = "left"; ctx.textBaseline = "middle";
+      setFont("700", 14.5, "mono"); ctx.fillStyle = P.soft;
+      ctx.fillText("RITMO POR VUELTA", L, bHdrY);
+      ctx.fillStyle = colA; ctx.fillRect(L + 195, bHdrY - 6, 12, 12);
+      ctx.fillText(`${dA.code} +RÁPIDO (ARRIBA)`, L + 214, bHdrY);
+      ctx.fillStyle = colB; ctx.fillRect(L + 465, bHdrY - 6, 12, 12);
+      ctx.fillText(`${dB.code} +RÁPIDO (ABAJO)`, L + 484, bHdrY);
+
+      const bTop = bHdrY + 26, bBot = bottom - 26, bMid = (bTop + bBot) / 2;
+      const mapA = Object.fromEntries(ptsA.map(r => [r[0], r[2]]));
+      const mapB = Object.fromEntries(ptsB.map(r => [r[0], r[2]]));
+      const lim = 1.0;
+      const yD = d => bMid - (Math.max(-lim, Math.min(lim, d)) / lim) * ((bBot - bTop) / 2);
+
+      ctx.strokeStyle = P.soft; ctx.lineWidth = 1; ctx.globalAlpha = 0.5;
+      ctx.beginPath(); ctx.moveTo(xL, bMid); ctx.lineTo(xR, bMid); ctx.stroke();
+      ctx.globalAlpha = 1;
+
+      const bw = Math.max(4, ((xR - xL) / Math.max(1, l1 - l0)) * 0.62);
+      for (let l = l0; l <= l1; l++) {
+        if (mapA[l] == null || mapB[l] == null) continue;
+        const diff = mapB[l] - mapA[l]; // >0 means A faster
+        if (Math.abs(diff) > 6) continue; // ignore SC/pit outlier bars
+        const y = yD(diff);
+        ctx.fillStyle = diff >= 0 ? colA : colB;
+        ctx.fillRect(xOf(l) - bw / 2, Math.min(y, bMid), bw, Math.abs(y - bMid));
+      }
+
+      setFont("400", 14, "mono"); ctx.fillStyle = P.soft; ctx.textAlign = "center"; ctx.textBaseline = "top";
+      const step = Math.max(1, Math.round((l1 - l0) / 5));
+      for (let l = l0; l <= l1; l += step) ctx.fillText(`V${l}`, xOf(l), bBot + 8);
+      ctx.fillText(`V${l1}`, xOf(l1), bBot + 8);
+      ctx.textAlign = "right"; ctx.textBaseline = "middle";
+      ctx.fillText("+1s", xL - 10, yD(1));
+      ctx.fillText("0", xL - 10, bMid);
+      ctx.fillText("-1s", xL - 10, yD(-1));
+    }
+
+    function drawPace(P, isPaper, L, R, top, bottom) {
+      const xL = L + 72, xR = R - 122;
+      const pTop = top + 36, pBot = bottom - 32;
+      const codes = state.paceSet.slice(0, 4);
+      const totalLaps = state.race.total_laps || 50;
+
+      // Median for outlier filtering
+      const allS = [];
+      codes.forEach(c => (state.race.series[c] || []).forEach(r => { if (r[0] > 1 && !r[3]) allS.push(r[2]); }));
+      allS.sort((a, b) => a - b);
+      const med = allS[Math.floor(allS.length / 2)] || 90;
+      const maxAllow = med * 1.06;
+
+      let minS = Infinity, maxS = -Infinity;
+      const clean = {};
+      codes.forEach(c => {
+        const pts = (state.race.series[c] || []).filter(r => r[0] > 1 && !r[3] && r[2] <= maxAllow);
+        clean[c] = pts;
+        pts.forEach(r => { if (r[2] < minS) minS = r[2]; if (r[2] > maxS) maxS = r[2]; });
+      });
+      if (!Number.isFinite(minS)) return;
+      minS = Math.floor(minS * 2) / 2 - 0.3;
+      maxS = Math.ceil(maxS * 2) / 2 + 0.3;
+
+      const xOf = l => xL + ((l - 1) / Math.max(1, totalLaps - 1)) * (xR - xL);
+      const yOf = s => pBot - ((s - minS) / Math.max(0.5, maxS - minS)) * (pBot - pTop);
+
+      ctx.textAlign = "left"; ctx.textBaseline = "top";
+      setFont("700", 15, "mono"); ctx.fillStyle = P.soft;
+      ctx.fillText("RITMO LIMPIO VUELTA A VUELTA  ·  MÁS ABAJO = MÁS RÁPIDO", L, top);
+
+      for (let i = 0; i <= 4; i++) {
+        const s = minS + ((maxS - minS) * i) / 4;
+        const y = yOf(s);
+        ctx.strokeStyle = P.line; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(xL, y); ctx.lineTo(xR, y); ctx.stroke();
+        setFont("400", 14, "mono"); ctx.fillStyle = P.soft; ctx.textAlign = "right"; ctx.textBaseline = "middle";
+        ctx.fillText(fmtLapShort(s), xL - 10, y);
+      }
+
+      const fallbackCols = isPaper ? ["#1D4ED8", "#0D8A76", "#C2590A", "#C81E28"] : ["#5B9BFF", "#1AD6B8", "#F5821F", "#F4C244"];
+      const used = new Set();
+      const ends = [];
+
+      codes.forEach((c, idx) => {
+        const d = drvMeta(c);
+        let col = safeColor(d.color, isPaper);
+        if (used.has(col.toLowerCase())) col = fallbackCols[idx % fallbackCols.length];
+        used.add(col.toLowerCase());
+
+        const pts = clean[c];
+        ctx.save();
+        ctx.strokeStyle = col; ctx.lineWidth = idx === 0 ? 4.4 : 3.0; ctx.lineJoin = "round";
+        ctx.beginPath();
+        let prevL = -99;
+        pts.forEach(r => {
+          const x = xOf(r[0]), y = yOf(r[2]);
+          if (r[0] - prevL > 2) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+          prevL = r[0];
+        });
+        ctx.stroke();
+        ctx.restore();
+
+        if (pts.length) {
+          const stLast = (state.race.stints[c] || []).slice(-1)[0];
+          const cLbl = stLast ? stLast.compound.slice(0, 3) : "";
+          ends.push({ y: yOf(pts[pts.length - 1][2]), txt: `${c} · ${cLbl}`, col });
+        }
+      });
+
+      ends.sort((a, b) => a.y - b.y);
+      for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 24) ends[i].y = ends[i - 1].y + 24;
+      ends.forEach(e => {
+        ctx.textAlign = "left"; ctx.textBaseline = "middle";
+        setFont("700", 15.5, "mono"); ctx.fillStyle = e.col;
+        ctx.fillText(e.txt, xR + 12, e.y);
+      });
+
+      setFont("400", 14, "mono"); ctx.fillStyle = P.soft; ctx.textAlign = "center"; ctx.textBaseline = "top";
+      for (let l = 1; l <= totalLaps; l += Math.max(5, Math.round(totalLaps / 5))) ctx.fillText(`V${l}`, xOf(l), pBot + 10);
+      ctx.fillText(`V${totalLaps}`, xOf(totalLaps), pBot + 10);
+    }
+
+    function drawStints(P, isPaper, L, R, top, bottom) {
+      const drvs = state.race.drivers.slice(0, 10);
+      const totalLaps = state.race.total_laps || 50;
+
+      ctx.textAlign = "left"; ctx.textBaseline = "top";
+      setFont("700", 15, "mono"); ctx.fillStyle = P.soft;
+      ctx.fillText(`ESTRATEGIA TOP 10 (${totalLaps} VUELTAS)`, L, top);
+
+      // Leyenda minimalista arriba a la derecha
+      const comps = [["S", "SOFT"], ["M", "MEDIUM"], ["H", "HARD"], ["I", "INTERMEDIATE"]];
+      let lx = R;
+      ctx.textBaseline = "middle";
+      for (let i = comps.length - 1; i >= 0; i--) {
+        const [sh, full] = comps[i];
+        setFont("700", 13.5, "mono");
+        const tw = ctx.measureText(full.slice(0, 4)).width;
+        lx -= tw;
+        ctx.fillStyle = P.soft; ctx.textAlign = "left";
+        ctx.fillText(full.slice(0, 4), lx, top + 8);
+        lx -= 18;
+        ctx.fillStyle = COMP_COLORS[full];
+        ctx.fillRect(lx, top + 2, 12, 12);
+        lx -= 18;
+      }
+
+      const startY = top + 44;
+      const rowStep = (bottom - startY) / Math.max(1, drvs.length);
+      const barX = L + 135, barW = R - barX;
+      const barH = Math.min(34, rowStep * 0.62);
+
+      drvs.forEach((d, i) => {
+        const y = startY + i * rowStep;
+        ctx.fillStyle = safeColor(d.color, isPaper);
+        ctx.fillRect(L, y + 3, 5, barH - 6);
+
+        ctx.textAlign = "left"; ctx.textBaseline = "middle";
+        setFont("700", 16.5, "mono"); ctx.fillStyle = P.ink;
+        ctx.fillText(`P${String(d.order).padStart(2, " ")} ${d.code}`, L + 16, y + barH / 2);
+
+        // Track base hairline
+        ctx.fillStyle = P.line;
+        ctx.fillRect(barX, y + barH / 2 - 1, barW, 2);
+
+        (state.race.stints[d.code] || []).forEach(st => {
+          const laps = Math.max(1, st.end - st.start + 1);
+          const x = barX + ((st.start - 1) / totalLaps) * barW;
+          const w = Math.max(4, (laps / totalLaps) * barW - 3);
+          const bg = COMP_COLORS[st.compound] || COMP_COLORS.UNKNOWN;
+          ctx.fillStyle = bg;
+          ctx.fillRect(x, y, w, barH);
+          if (w > 54) {
+            ctx.fillStyle = (st.compound === "MEDIUM" || st.compound === "HARD") ? "#111827" : "#FFFFFF";
+            ctx.textAlign = "center"; ctx.textBaseline = "middle";
+            setFont("700", 13.5, "mono");
+            ctx.fillText(`${st.compound[0]} · ${laps}v`, x + w / 2, y + barH / 2);
+          }
+        });
+      });
+    }
+
+    function drawQualy(P, isPaper, L, R, top, bottom) {
+      const q = state.qualyCompare;
+      const qa = q.a, qb = q.b;
+      const [colA, colB] = distinctPairColors(qa.driver.color, qb.driver.color, isPaper);
+      const avail = bottom - top;
+      const mapH = avail * 0.54;
+
+      // Header directo de duelo
+      ctx.textAlign = "left"; ctx.textBaseline = "top";
+      setFont("700", 15, "mono");
+      ctx.fillStyle = colA; ctx.fillText(`■ ${qa.driver.code} (${fmtLap(qa.lap_duration)})`, L, top);
+      ctx.fillStyle = colB; ctx.fillText(`■ ${qb.driver.code} (${fmtLap(qb.lap_duration)})`, L + 260, top);
+      ctx.fillStyle = P.soft; ctx.textAlign = "right";
+      ctx.fillText("COLOR EN PISTA = MÁS VELOZ", R, top);
+
+      // 1) Mapa de Dominancia (X, Y)
+      if (q.track_xy && q.track_xy.x.length) {
+        const xs = q.track_xy.x, ys = q.track_xy.y;
+        const minX = Math.min(...xs), maxX = Math.max(...xs);
+        const minY = Math.min(...ys), maxY = Math.max(...ys);
+        const pad = 28;
+        const boxTop = top + 34, boxH = mapH - 34;
+        const sc = Math.min((R - L - pad * 2) / Math.max(1, maxX - minX), (boxH - pad * 2) / Math.max(1, maxY - minY));
+        const ox = L + ((R - L) - (maxX - minX) * sc) / 2;
+        const oy = boxTop + (boxH - (maxY - minY) * sc) / 2;
+        const pt = i => [ox + (xs[i] - minX) * sc, boxTop + boxH - (oy - boxTop + (ys[i] - minY) * sc)];
+
+        ctx.lineCap = "round"; ctx.lineJoin = "round";
+        for (let i = 0; i < xs.length - 1; i++) {
+          const [x1, y1] = pt(i), [x2, y2] = pt(i + 1);
+          ctx.strokeStyle = qa.speed[i] >= qb.speed[i] ? colA : colB;
+          ctx.lineWidth = 8.5;
+          ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+        }
+        const [sx, sy] = pt(0);
+        ctx.fillStyle = P.ink; ctx.strokeStyle = P.red; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(sx, sy, 7.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        setFont("700", 13.5, "mono"); ctx.fillStyle = P.ink; ctx.textAlign = "left"; ctx.textBaseline = "middle";
+        ctx.fillText("META", sx + 12, sy);
+      }
+
+      // 2) Curva de velocidad abajo
+      const sTop = top + mapH + 26, sBot = bottom - 26;
+      const xL = L + 54, xR = R - 10;
+      const n = qa.speed.length;
+      const maxSpd = Math.ceil(Math.max(...qa.speed, ...qb.speed) / 20) * 20;
+      const minSpd = 60;
+      const xOf = i => xL + (i / (n - 1)) * (xR - xL);
+      const yOf = v => sBot - ((v - minSpd) / Math.max(1, maxSpd - minSpd)) * (sBot - sTop);
+
+      setFont("700", 14.5, "mono"); ctx.fillStyle = P.soft; ctx.textAlign = "left"; ctx.textBaseline = "bottom";
+      ctx.fillText("VELOCIDAD EN VUELTA (KM/H)", L, sTop - 8);
+
+      [100, 200, 300, maxSpd].forEach(v => {
+        if (v > maxSpd) return;
+        const y = yOf(v);
+        ctx.strokeStyle = P.line; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(xL, y); ctx.lineTo(xR, y); ctx.stroke();
+        setFont("400", 13.5, "mono"); ctx.fillStyle = P.soft; ctx.textAlign = "right"; ctx.textBaseline = "middle";
+        ctx.fillText(String(v), xL - 10, y);
+      });
+
+      [[qb.speed, colB, true], [qa.speed, colA, false]].forEach(([arr, col, dashed]) => {
+        ctx.save();
+        ctx.strokeStyle = col; ctx.lineWidth = dashed ? 2.8 : 3.4;
+        if (dashed) ctx.setLineDash([6, 4]);
+        ctx.beginPath();
+        arr.forEach((v, i) => { const x = xOf(i), y = yOf(v); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
+        ctx.stroke();
+        ctx.restore();
+      });
+
+      setFont("400", 13.5, "mono"); ctx.fillStyle = P.soft; ctx.textAlign = "center"; ctx.textBaseline = "top";
+      const dist = q.track_length_m || 5000;
+      for (let k = 0; k <= 4; k++) {
+        ctx.fillText(`${Math.round((dist * k) / 4)} m`, xL + ((xR - xL) * k) / 4, sBot + 8);
+      }
+    }
+
+    // --- UI EVENTS ---
+    document.getElementById("yearSel").addEventListener("change", e => {
+      state.year = parseInt(e.target.value, 10);
+      loadMeetings(state.year);
+    });
+    document.getElementById("gpSel").addEventListener("change", e => {
+      selectMeeting(parseInt(e.target.value, 10));
+    });
+
+    document.querySelectorAll("[data-mode]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        state.mode = btn.dataset.mode;
+        document.querySelectorAll("[data-mode]").forEach(b => b.classList.toggle("active", b === btn));
+        document.getElementById("ctrlBattle").classList.toggle("hidden", state.mode !== "battle");
+        document.getElementById("ctrlPace").classList.toggle("hidden", state.mode !== "pace");
+        document.getElementById("ctrlQualy").classList.toggle("hidden", state.mode !== "qualy");
+        if (state.mode === "qualy") {
+          if (!state.qualyDrivers.length) await loadQualyDrivers();
+          else { autoPopulateCopy(); render(); }
+        } else {
+          if (!state.race) await loadRace();
+          else { autoPopulateCopy(); render(); }
+        }
+      });
+    });
+
+    document.getElementById("bDrvA").addEventListener("change", e => { state.drvA = e.target.value; autoPopulateCopy(); render(); });
+    document.getElementById("bDrvB").addEventListener("change", e => { state.drvB = e.target.value; autoPopulateCopy(); render(); });
+    document.getElementById("bDrvC").addEventListener("change", e => { state.drvC = e.target.value; render(); });
+    document.getElementById("lapStart").addEventListener("change", e => { state.lapStart = parseInt(e.target.value, 10) || 1; autoPopulateCopy(); render(); });
+    document.getElementById("lapEnd").addEventListener("change", e => { state.lapEnd = parseInt(e.target.value, 10) || 50; autoPopulateCopy(); render(); });
+    document.getElementById("btnPostSC").addEventListener("click", () => {
+      if (!state.race) return;
+      const scs = state.race.safety_cars || [];
+      state.lapStart = scs.length ? Math.min(state.race.total_laps - 5, scs[scs.length - 1][1] + 1) : 1;
+      state.lapEnd = state.race.total_laps;
+      document.getElementById("lapStart").value = state.lapStart;
+      document.getElementById("lapEnd").value = state.lapEnd;
+      autoPopulateCopy();
+      render();
+    });
+
+    document.getElementById("btnLoadQualy").addEventListener("click", loadQualyCompare);
+    document.getElementById("formatSel").addEventListener("change", e => { state.format = e.target.value; render(); });
+    document.getElementById("paletteSel").addEventListener("change", e => { state.palette = e.target.value; render(); });
+    document.getElementById("inLine1").addEventListener("input", e => { state.line1 = e.target.value; render(); });
+    document.getElementById("inLine2").addEventListener("input", e => { state.line2 = e.target.value; render(); });
+    document.getElementById("inDeck").addEventListener("input", e => { state.deck = e.target.value; render(); });
+    document.getElementById("inHandle").addEventListener("input", e => { state.handle = e.target.value; render(); });
+    document.getElementById("btnAutoCopy").addEventListener("click", () => { autoPopulateCopy(); render(); });
+    document.getElementById("grainRange").addEventListener("input", e => {
+      state.grain = parseInt(e.target.value, 10);
+      document.getElementById("grainVal").textContent = state.grain;
+      render();
+    });
+
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+      const gpSlug = (state.meeting?.circuit || "f1").toLowerCase().replace(/\s+/g, "_");
+      const a = document.createElement("a");
+      a.download = `revnation_${gpSlug}_${state.mode}_${state.format.replace(":", "x")}.png`;
+      a.href = canvas.toDataURL("image/png");
+      a.click();
+    });
+
+    document.fonts.ready.then(() => loadMeetings(state.year));
+  </script>
+</body>
+</html>
